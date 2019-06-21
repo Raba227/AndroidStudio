@@ -29,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // インスタンス初期化
-        sec = 30000;
         player_number = 2;
         InitialCountNumber = 60000 * getIntent().getLongExtra("countNumber", 0);
+        sec = 1000 * getIntent().getLongExtra("secNumber", 0);
         TextView textView = findViewById(R.id.timer1);
         timerText.add(textView);
         textView = findViewById(R.id.timer2);
