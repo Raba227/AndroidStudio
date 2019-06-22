@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<TextView> playerName = new ArrayList<>();
     private ArrayList<Boolean> active = new ArrayList<>();
     private ArrayList<Boolean> finish_flag = new ArrayList<>();
+    private SoundPlayer soundPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         layout.setGravity(Gravity.CENTER);
         setContentView(layout);
+
+        soundPlayer = new SoundPlayer(this);
 
         // マージン計算
         float scale = getResources().getDisplayMetrics().density;
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     active_number = 0;
                     timerText.get(0).setTextColor(Color.parseColor("red"));
                     countDown.get(0).start();
+                    soundPlayer.playChangeSound();
                     count = 1;
                 } else {
                     countDown.get(active_number).cancel();
@@ -102,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                     active.set(active_number, true);
                     timerText.get(active_number).setTextColor(Color.parseColor("red"));
                     countDown.get(active_number).start();
+                    soundPlayer.playChangeSound();
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -122,9 +127,14 @@ public class MainActivity extends AppCompatActivity {
         // 持ち時間を使い切ったプレイヤーはそのまま秒読みフェーズに進行
         @Override
         public void onFinish() {
-            countDown.set(active_number, new CountDown(sec, interval));
-            countDown.get(active_number).start();
-            finish_flag.set(active_number, true);
+            if (finish_flag.get(active_number) == true) {
+                soundPlayer.playFinishSound();
+                timerText.get(active_number).setText("You Lose !!");
+            } else {
+                countDown.set(active_number, new CountDown(sec, interval));
+                countDown.get(active_number).start();
+                finish_flag.set(active_number, true);
+            }
         }
 
         // countdoowntimerの仕様上一時停止するにはmillisUntilFinishedを保存して新たにインスタンスを生成する必要がある
