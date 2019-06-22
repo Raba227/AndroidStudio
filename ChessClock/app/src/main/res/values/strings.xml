@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">BoardGameClock</string>
+    <string name="app_name">ChessClock</string>
     <string name="minute1">1</string>
     <string name="minute2">3</string>
     <string name="minute3">5</string>
     <string name="minute4">7</string>
-    <string name="player">プレイヤー数</string>
-    <string name="time">持ち時間</string>
-    <string name="second">秒読み</string>
+    <string name="player">プレイヤー数(人)</string>
+    <string name="time">持ち時間(分)</string>
+    <string name="second">秒読み(秒)</string>
     <string-array name="player_number">
         <item>2</item>
         <item>3</item>
