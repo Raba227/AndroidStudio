@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         layout.setGravity(Gravity.CENTER);
+        layout.setBackgroundColor(Color.LTGRAY);
         setContentView(layout);
 
         soundPlayer = new SoundPlayer(this);
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 if (count == 0) {
                     active.set(0, true);
                     active_number = 0;
-                    timerText.get(0).setTextColor(Color.parseColor("red"));
+                    timerText.get(0).setTextColor(Color.parseColor("yellow"));
                     countDown.get(0).start();
                     soundPlayer.playChangeSound();
                     count = 1;
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                         active_number = 0;
                     }
                     active.set(active_number, true);
-                    timerText.get(active_number).setTextColor(Color.parseColor("red"));
+                    timerText.get(active_number).setTextColor(Color.parseColor("yellow"));
                     countDown.get(active_number).start();
                     soundPlayer.playChangeSound();
                 }
@@ -127,8 +128,9 @@ public class MainActivity extends AppCompatActivity {
         // 持ち時間を使い切ったプレイヤーはそのまま秒読みフェーズに進行
         @Override
         public void onFinish() {
-            if (finish_flag.get(active_number) == true) {
+            if (finish_flag.get(active_number) == true || sec == 0) {
                 soundPlayer.playFinishSound();
+                    timerText.get(active_number).setTextColor(Color.parseColor("red"));
                 timerText.get(active_number).setText("You Lose !!");
             } else {
                 countDown.set(active_number, new CountDown(sec, interval));
