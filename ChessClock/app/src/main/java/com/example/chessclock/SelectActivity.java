@@ -13,7 +13,6 @@ import android.widget.Spinner;
 public class SelectActivity extends AppCompatActivity {
     private int playerNumber;
     private long countNumber, secNumber;
-    private RadioGroup times;
     private Spinner player_spinner, time_spinner, sec_spinner;
 
     @Override

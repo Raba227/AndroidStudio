@@ -8,7 +8,6 @@ import android.media.SoundPool;
 public class SoundPlayer {
     private static SoundPool soundPool;
     private static int changeSound, finishSound;
-
     private AudioAttributes audioAttributes;
 
     public SoundPlayer(Context context) {

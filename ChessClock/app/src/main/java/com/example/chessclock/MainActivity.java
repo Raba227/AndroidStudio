@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss.SS", Locale.JAPAN);
     private final long interval = 10;
     private int active_number, player_number, count;
-    private long InitialCountNumber, sec;
+    private long initiaCountNumber, sec;
     private ArrayList<Long> countNum = new ArrayList<>();
     private ArrayList<CountDown> countDown = new ArrayList<>();
     private ArrayList<TextView> timerText = new ArrayList<>();
@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
         layout.setBackgroundColor(Color.LTGRAY);
         setContentView(layout);
 
-        soundPlayer = new SoundPlayer(this);
-
         // マージン計算
         float scale = getResources().getDisplayMetrics().density;
         int margins = (int)(1 * scale);
@@ -51,9 +49,10 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout.LayoutParams textLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         textLayoutParams.setMargins(margins, margins, margins, margins);
 
-        // インスタンス初期化
+        // プレイヤー人数に応じてインスタンス初期化
+        soundPlayer = new SoundPlayer(this);
         player_number = getIntent().getIntExtra("playerNumber", 0);
-        InitialCountNumber = 60000 * getIntent().getLongExtra("countNumber", 0);
+        initiaCountNumber = 60000 * getIntent().getLongExtra("countNumber", 0);
         sec = 1000 * getIntent().getLongExtra("secNumber", 0);
         for(int player = 0; player < player_number; player++) {
             playerName.add(new TextView(this));
@@ -63,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
             playerName.get(player).setLayoutParams(textLayoutParams);
             layout.addView(playerName.get(player));
             timerText.add(new TextView(this));
-            timerText.get(player).setText(dateFormat.format(InitialCountNumber));
+            timerText.get(player).setText(dateFormat.format(initiaCountNumber));
             timerText.get(player).setTextSize(TypedValue.COMPLEX_UNIT_DIP, 50);
             timerText.get(player).setTextColor(Color.rgb(0x0, 0x0, 0x0));
             timerText.get(player).setLayoutParams(textLayoutParams);
             layout.addView(timerText.get(player));
-            countDown.add(new CountDown(InitialCountNumber, interval));
-            countNum.add(InitialCountNumber);
+            countDown.add(new CountDown(initiaCountNumber, interval));
+            countNum.add(initiaCountNumber);
             active.add(false);
             finish_flag.add(false);
         }
@@ -86,18 +85,18 @@ public class MainActivity extends AppCompatActivity {
                 if (count == 0) {
                     active.set(0, true);
                     active_number = 0;
-                    timerText.get(0).setTextColor(Color.parseColor("yellow"));
+                    timerText.get(0).setTextColor(Color.parseColor("red"));
                     countDown.get(0).start();
                     soundPlayer.playChangeSound();
                     count = 1;
                 } else {
                     countDown.get(active_number).cancel();
                     timerText.get(active_number).setTextColor(Color.rgb(0x0, 0x0, 0x0));
-
                     // 持ち時間を使い切った場合秒読みスタート
                     if (finish_flag.get(active_number)) {
                         countNum.set(active_number, sec);
                     }
+                    // 残り時間を受け取って新たにインスタンス生成
                     countDown.set(active_number, new CountDown(countNum.get(active_number), interval));
                     active.set(active_number, false);
                     active_number++;
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                         active_number = 0;
                     }
                     active.set(active_number, true);
-                    timerText.get(active_number).setTextColor(Color.parseColor("yellow"));
+                    timerText.get(active_number).setTextColor(Color.parseColor("red"));
                     countDown.get(active_number).start();
                     soundPlayer.playChangeSound();
                 }
@@ -130,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
         public void onFinish() {
             if (finish_flag.get(active_number) == true || sec == 0) {
                 soundPlayer.playFinishSound();
-                    timerText.get(active_number).setTextColor(Color.parseColor("red"));
                 timerText.get(active_number).setText("You Lose !!");
             } else {
                 countDown.set(active_number, new CountDown(sec, interval));
