@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<TextView> playerName = new ArrayList<>();
     private ArrayList<Boolean> active = new ArrayList<>();
     private ArrayList<Boolean> finish_flag = new ArrayList<>();
+    private ArrayList<Boolean> lose_flag = new ArrayList<>();
     private SoundPlayer soundPlayer;
 
     @Override
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         player_number = getIntent().getIntExtra("playerNumber", 0);
         initiaCountNumber = 60000 * getIntent().getLongExtra("countNumber", 0);
         sec = 1000 * getIntent().getLongExtra("secNumber", 0);
+        count = -1;
         for(int player = 0; player < player_number; player++) {
             playerName.add(new TextView(this));
             playerName.get(player).setText("Player " + Integer.toString(player + 1));
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             countNum.add(initiaCountNumber);
             active.add(false);
             finish_flag.add(false);
+            lose_flag.add(false);
         }
     }
 
@@ -82,13 +85,16 @@ public class MainActivity extends AppCompatActivity {
 
             // タッチ一回目は一番上をスタート、二回目以降動いているタイマーと止め、次の手番をスタート
             case MotionEvent.ACTION_DOWN:
-                if (count == 0) {
+                if (count == -1) {
                     active.set(0, true);
                     active_number = 0;
                     timerText.get(0).setTextColor(Color.parseColor("red"));
                     countDown.get(0).start();
                     soundPlayer.playChangeSound();
-                    count = 1;
+                    count = 0;
+                } else if (count == player_number - 1) {
+                    // 勝敗が決したら停止
+                    break;
                 } else {
                     countDown.get(active_number).cancel();
                     timerText.get(active_number).setTextColor(Color.rgb(0x0, 0x0, 0x0));
@@ -102,6 +108,13 @@ public class MainActivity extends AppCompatActivity {
                     active_number++;
                     if (active_number == player_number) {
                         active_number = 0;
+                    }
+                    // loseしたplayerは飛ばす
+                    while (lose_flag.get(active_number)) {
+                        active_number++;
+                        if (active_number == player_number) {
+                            active_number = 0;
+                        }
                     }
                     active.set(active_number, true);
                     timerText.get(active_number).setTextColor(Color.parseColor("red"));
@@ -125,11 +138,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 持ち時間を使い切ったプレイヤーはそのまま秒読みフェーズに進行
+        // 秒読みを使い切るとlose
         @Override
         public void onFinish() {
             if (finish_flag.get(active_number) == true || sec == 0) {
                 soundPlayer.playFinishSound();
                 timerText.get(active_number).setText("You Lose !!");
+                lose_flag.set(active_number, true);
+                count++;
+                // 最後の一人が勝者
+                if (count == player_number - 1) {
+                    timerText.get(active_number).setTextColor(Color.rgb(0x0, 0x0, 0x0));
+                    timerText.get(lose_flag.indexOf(false)).setText("You Win !!");
+                    timerText.get(lose_flag.indexOf(false)).setTextColor(Color.parseColor("blue"));
+                }
             } else {
                 countDown.set(active_number, new CountDown(sec, interval));
                 countDown.get(active_number).start();
