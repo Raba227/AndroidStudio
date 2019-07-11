@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         count = -1;
         for(int player = 0; player < player_number; player++) {
             playerName.add(new TextView(this));
-            playerName.get(player).setText("Player " + Integer.toString(player + 1));
+            playerName.get(player).setText(getIntent().getStringExtra("playerName" + Integer.toString(player)));
             playerName.get(player).setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
             playerName.get(player).setTextColor(Color.rgb(0x0, 0x0, 0x0));
             playerName.get(player).setLayoutParams(textLayoutParams);
@@ -75,6 +77,28 @@ public class MainActivity extends AppCompatActivity {
             finish_flag.add(false);
             lose_flag.add(false);
         }
+        Button button = new Button(this);
+        button.setText("一時停止/再開");
+        button.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 30);
+        button.setLayoutParams(textLayoutParams);
+        layout.addView(button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (active.get(active_number)) {
+                    active.set(active_number, false);
+                    countDown.get(active_number).cancel();
+                    timerText.get(active_number).setTextColor(Color.rgb(0x0, 0x0, 0x0));
+                    countDown.set(active_number, new CountDown(countNum.get(active_number), interval));
+                    soundPlayer.playChangeSound();
+                } else {
+                    active.set(active_number, true);
+                    timerText.get(active_number).setTextColor(Color.parseColor("red"));
+                    countDown.get(active_number).start();
+                    soundPlayer.playChangeSound();
+                }
+            }
+        });
     }
 
     @Override

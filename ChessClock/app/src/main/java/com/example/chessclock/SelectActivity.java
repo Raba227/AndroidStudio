@@ -44,7 +44,7 @@ public class SelectActivity extends AppCompatActivity {
                 playerNumber = Integer.parseInt((String)player_spinner.getSelectedItem());
                 countNumber = Long.parseLong((String)time_spinner.getSelectedItem());
                 secNumber = Long.parseLong((String)sec_spinner.getSelectedItem());
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), PlayerNameActivity.class);
                 intent.putExtra("playerNumber", playerNumber);
                 intent.putExtra("countNumber", countNumber);
                 intent.putExtra("secNumber", secNumber);
