@@ -7,6 +7,7 @@
     <string name="player">プレイヤー数(人)</string>
     <string name="time">持ち時間(分)</string>
     <string name="second">秒読み(秒)</string>
+    <string name="count">カウントアップ</string>
     <string-array name="player_number">
         <item>2</item>
         <item>3</item>

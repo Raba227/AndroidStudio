@@ -18,6 +18,8 @@ public class PlayerNameActivity extends AppCompatActivity {
     private int playerNumber;
     private long countNumber, secNumber;
     private ArrayList<EditText> playerName = new ArrayList<>();
+    private boolean CountUp;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,15 +68,20 @@ public class PlayerNameActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                countNumber = getIntent().getLongExtra("countNumber", 0);
-                secNumber = getIntent().getLongExtra("secNumber", 0);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                CountUp = getIntent().getBooleanExtra("CountUp",false);
+                if (CountUp) {
+                    intent = new Intent(getApplicationContext(), CountUpActivity.class);
+                } else {
+                    intent = new Intent(getApplicationContext(), MainActivity.class);
+                    countNumber = getIntent().getLongExtra("countNumber", 0);
+                    secNumber = getIntent().getLongExtra("secNumber", 0);
+                    intent.putExtra("countNumber", countNumber);
+                    intent.putExtra("secNumber", secNumber);
+                }
                 for (int player = 0; player < playerNumber; player++) {
                     intent.putExtra("playerName" + Integer.toString(player), playerName.get(player).getText().toString());
                 }
                 intent.putExtra("playerNumber", playerNumber);
-                intent.putExtra("countNumber", countNumber);
-                intent.putExtra("secNumber", secNumber);
                 startActivity(intent);
             }
         });

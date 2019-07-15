@@ -19,7 +19,7 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     // フィールド準備
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss.SS", Locale.JAPAN);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss.S", Locale.JAPAN);
     private final long interval = 10;
     private int active_number, player_number, count;
     private long initiaCountNumber, sec;
